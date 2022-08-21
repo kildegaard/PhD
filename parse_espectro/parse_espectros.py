@@ -3,8 +3,7 @@
 Programa para parsear los arhivos del espectro del PINMATE
 '''
 
-import sys
-import csv
+import os
 
 
 def parse_espectro(file_in, file_out):
@@ -31,12 +30,22 @@ def parse_espectro(file_in, file_out):
                 print(linea, file=output_file, end='')
 
 
-def main(args):
-    if len(args) == 2:
-        parse_espectro(*args)
-    else:
-        raise SystemExit('Uso: ...')  # TODO: Falta poner mensajito acá
+def main():
+    try:
+        os.mkdir('archivos_csv')
+    except:
+        pass
+    lista_archivos = os.listdir('./archivos_txt')
+    lista_de_serial = [
+        archivo for archivo in lista_archivos if 'serial' in archivo]
+
+    print(lista_de_serial)
+
+    for archivo in lista_de_serial:
+        nombre_output = './archivos_csv/' + archivo[:-3] + 'csv'
+        archivo = './archivos_txt/' + archivo
+        parse_espectro(archivo, nombre_output)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
