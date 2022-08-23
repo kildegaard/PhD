@@ -1,43 +1,65 @@
+'''
+Este programa agarra una carpeta 'archivos_csv' con los csv ya creados anteriormente y genera
+un gráfico con los datos superpuestos.
+
+USO: 
+py graficar_espectro.py -> Te grafica todos los archivos csv juntos, con x e y en todo el rango de datos
+
+py graficar_espectro.py lindo -> Idem pero y va de 0 a 1 (como sería de esperar para un espectro)
+
+py graficar_espectro.py X_INF X_SUP Y_INF Y_SUP -> Grafica usando esos límites en particular
+
+Por lo general conviene graficar sin argumentos y luego aplicarle los limites que uno crea convenientes
+
+'''
+
+import sys
 import csv
 import os
 from matplotlib import pyplot as plt
-import pandas as pd
 
-# path = '../parse_espectro/archivos_csv'
-# file_1 = os.listdir(path)[2]
-# path_util = os.path.join(path, file_1)
-# print(path_util)
 
-# path_1 = 'C:\\Users\\Gustavo\\Desktop\\cosas lignina\\CurvaCalibLignina\\archivos_csv'
-# path_2 = os.listdir(path_1)[0]
-# todos_los_path = [os.path.join(path_1, os.listdir(path_1)[i])
-#                   for i in range(len(os.listdir(path_1)))]
-# path_util = os.path.join(path_1, path_2)
+def graficar_todo_junto(INF_X=0, SUP_X=None, INF_Y=0, SUP_Y=1, todo_el_rango=False, tipico_graf=False):
+    os.chdir('archivos_csv')
+    todos_los_path = os.listdir()
 
-os.chdir('archivos_csv')
-todos_los_path = os.listdir()
-print(todos_los_path)
-fig, ax = plt.subplots()
-for path in todos_los_path:
-    with open(path, 'rt', encoding='utf-8') as f:
-        archivo = csv.reader(f)
-        X = []
-        Y = []
-        for linea in archivo:
-            X.append(float(linea[0]))
-            Y.append(float(linea[1]))
+    fig, ax = plt.subplots()
 
-    nombre = f'{path[:-4]} ppm'
+    for path in todos_los_path:
+        with open(path, 'rt', encoding='utf-8') as f:
+            archivo = csv.reader(f)
+            X = []
+            Y = []
+            for linea in archivo:
+                X.append(float(linea[0]))
+                Y.append(float(linea[1]))
 
-    ax.set_ylim([0, 1])
-    ax.set_xlim([309, max(X)])
+        nombre = f'{path[:-4]} ppm'
+        if todo_el_rango:
+            ax.set_xlim([min(X), max(X)])
+            ax.set_ylim([min(Y), max(Y)])
+        elif tipico_graf:
+            ax.set_xlim([min(X), max(X)])
+            ax.set_ylim([0, 1])
+        else:
+            ax.set_xlim([INF_X, SUP_X])
+            ax.set_ylim([INF_Y, SUP_Y])
 
-    ax.grid(True)
-    ax.plot(X, Y, label=nombre)
-    ax.legend(loc='upper right')
+        ax.grid(True)
+        ax.plot(X, Y, label=nombre)
+        ax.legend(loc='upper right')
 
-ax.text(320, 0.07, '10 ppm')
-ax.text(323, 0.35, '100 ppm')
-ax.text(450, 0.6, '1000 ppm')
+    plt.show()
 
-plt.show()
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    if len(args) == 0:
+        graficar_todo_junto(todo_el_rango=True)
+    elif args[0] == 'beer':
+        graficar_todo_junto(tipico_graf=True)
+    if len(args) == 4:
+        # Usando map le aplico la función float a todos los elementos de la lista
+        args = list(map(float, args))
+        INF_X, SUP_X, INF_Y, SUP_Y = args
+        graficar_todo_junto(INF_X, SUP_X, INF_Y, SUP_Y)
