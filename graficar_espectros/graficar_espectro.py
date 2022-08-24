@@ -52,8 +52,7 @@ def graficar_todo_junto(INF_X=0, SUP_X=None, INF_Y=0, SUP_Y=1, todo_el_rango=Fal
     plt.show()
 
 
-if __name__ == '__main__':
-    args = sys.argv[1:]
+def main(args):
     if len(args) == 0:
         graficar_todo_junto(todo_el_rango=True)
     elif args[0] == 'beer':
@@ -63,3 +62,8 @@ if __name__ == '__main__':
         args = list(map(float, args))
         INF_X, SUP_X, INF_Y, SUP_Y = args
         graficar_todo_junto(INF_X, SUP_X, INF_Y, SUP_Y)
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    main(args)

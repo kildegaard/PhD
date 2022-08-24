@@ -8,11 +8,9 @@ import os
 
 def parse_espectro(file_in, file_out):
     # Abro el archivo y guardo en una lista las líneas ya con formato csv
-
-    # with open(sys.argv[1:][0], 'rt') as file:
     with open(file_in, 'rt') as file:
         data = []
-        for linea in file:
+        for linea in file:  # Evita el problema de líneas vacías
             if not linea:
                 continue
             linea_parseada = linea.strip().split('  ')
@@ -24,6 +22,7 @@ def parse_espectro(file_in, file_out):
     # Creo un archivo a partir de la lista anterior
     with open(file_out, 'w') as output_file:
         for n_linea, linea in enumerate(data, start=1):
+            # Todo esto es para evitar que quede una línea al final vacía
             if n_linea < len(data):
                 print(linea, file=output_file)
             else:
