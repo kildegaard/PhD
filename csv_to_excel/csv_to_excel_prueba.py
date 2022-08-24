@@ -7,16 +7,18 @@ import os
 
 file = '10.csv'
 
-df = pd.read_csv(file, index_col=0, header=None,
-                 names=['Long. de onda', file[:-4]+' ppm'])
-# %%
-df.sort_index(inplace=True)
-# %%
-df.head()
+df1 = pd.read_csv(file, index_col=0, header=None,
+                  names=['Long. de onda', file[:-4]+' ppm'])
+df1.sort_index(inplace=True)
 # %%
 file2 = '100.csv'
-df_aux = pd.read_csv(file2, index_col=0, header=None,
-                     names=['Long. de onda', file2[:-4]+' ppm'])
-df.sort_index(inplace=True)
+df2 = pd.read_csv(file2, index_col=0, header=None,
+                  names=['Long. de onda', file2[:-4]+' ppm'])
+df2.sort_index(inplace=True)
 # %%
-df_aux.head()
+frames = [df1, df2]
+result = pd.concat([df1, df2], axis=1)
+# %%
+result
+# %%
+result.to_excel('10 y 100 ppm.xlsx')
